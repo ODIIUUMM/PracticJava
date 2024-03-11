@@ -1,24 +1,33 @@
 package org.example;
 
-public class SumArray implements Runnable{
-    Object locker;
+import java.util.ArrayList;
 
-    public SumArray(Object locker) {
-        this.locker = locker;
+public class SumArray implements Runnable{
+    private final ArrayLocker data;
+
+    public SumArray(ArrayLocker data) {
+        this.data = data;
     }
     @Override
     public void run() {
-        synchronized (locker) {
+        synchronized (data) {
             try {
-                locker.wait();
+                data.wait();
+                handler();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println("управление принято");
-            for(int i = 0; i < Main.arr.length; i++) {
-                System.out.println(Main.arr[i]);
+
             }
 
         }
+    }
+
+    private void handler() {
+        int count = 0;
+        ArrayList<Integer> temp = data.getData();
+        for(int i = 0; i < temp.size(); i++) {
+            count += temp.get(i);
+            System.out.println(temp.get(i));
+        }
+        System.out.println(count + "its count");
     }
 }
